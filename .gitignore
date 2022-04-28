@@ -1,7 +1,8 @@
-/inventory/*
+/inventory/**/*.secret.*
 !/inventory/.gitkeep
 !/inventory/host_vars/.gitkeep
 !/inventory/scripts
 /roles/*/files/scratchpad
 .DS_Store
 .python-version
+.idea/
