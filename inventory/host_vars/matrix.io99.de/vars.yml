@@ -1,0 +1,108 @@
+---
+# The bare domain name which represents your Matrix identity.
+# Matrix user ids for your server will be of the form (`@user:<matrix-domain>`).
+#
+# Note: this playbook does not touch the server referenced here.
+# Installation happens on another server ("matrix.<matrix-domain>").
+#
+# If you've deployed using the wrong domain, you'll have to run the Uninstalling step,
+# because you can't change the Domain after deployment.
+#
+# Example value: example.com
+matrix_domain: io99.de
+
+# The Matrix homeserver software to install.
+# See `roles/matrix-base/defaults/main.yml` for valid options.
+matrix_homeserver_implementation: synapse
+
+# This is something which is provided to Let's Encrypt when retrieving SSL certificates for domains.
+#
+# In case SSL renewal fails at some point, you'll also get an email notification there.
+#
+# If you decide to use another method for managing SSL certificates (different than the default Let's Encrypt),
+# you won't be required to define this variable (see `docs/configuring-playbook-ssl-certificates.md`).
+#
+# Example value: someone@example.com
+matrix_ssl_lets_encrypt_support_email: 'admin@io99.de'
+
+#
+# leads to an error - and is insecure anyway
+matrix_vars_yml_snapshotting_enabled: false
+
+########################################################################################################################
+#
+# Notwendig, damit die 'federation' funktioniert.
+# Bei einer 'echten/funktionalen' Base-Domain muesste dort einfach die entsprechende Datei hinterlegt werden.
+#
+# @see https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook-base-domain-serving.md
+#
+matrix_nginx_proxy_base_domain_serving_enabled: true
+matrix_nginx_proxy_base_domain_homepage_enabled: false
+
+
+########################################################################################################################
+#
+# Sehr einfache Admin-Oberflaeche fuer Synapse.
+# URL: https://matrix.<domain>/synapse-admin/
+#
+# @see https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook-synapse-admin.md
+#
+matrix_synapse_admin_enabled: true
+
+
+########################################################################################################################
+#
+# Koennte/sollte dafuer sorgen, dass neu erstellte Benutzer automatisch zu Spaces hinzugefuegt werden.
+# Gilt wohl nur fuer 'lokal erstellte' Benutzer.
+#
+matrix_synapse_autocreate_auto_join_rooms: true
+matrix_synapse_auto_join_rooms: ['#infopunkt:io99.de', '#neuigkeiten--infogruppe:io99.de', '#regionale-vernetzung:io99.de', '#mitfahrboerse:io99.de']
+
+
+########################################################################################################################
+#
+# Durch die federation koennen auch Nutzer mit einem 'anderweitig erstellten' Matrix-Account auf die oeffentlichen
+# Spaces und Raeume zugreifen.
+# Externe Nutzer koennen auch eingeladen werden. Und ihnen koennen Rollen zugewiesen werden wie Moderator oder Admin.
+#
+# Grund: Es scheint, als wuerden Matrix-Clients wie Element (verstaendlicher Weise) keine 'Multi-Account-Setups' unterstuetzen.
+#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# ACHTUNG: Die konfiguration hier ist eher fuer einen 'public' Server. Einen 'internen' Server sollte/koennta man anders
+#          konfigurieren
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# @see https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook-dimension.md
+#
+matrix_synapse_federation_enabled: true
+matrix_synapse_container_federation_api_tls_host_bind_port: '0.0.0.0:8448'
+matrix_synapse_allow_guest_access: true
+#
+matrix_nginx_proxy_proxy_matrix_federation_api_enabled: true
+#
+matrix_synapse_allow_public_rooms_without_auth: true
+matrix_synapse_allow_public_rooms_over_federation: true
+matrix_synapse_require_auth_for_profile_requests: true
+
+
+########################################################################################################################
+#
+# Benutzer sollten sich nicht einfach so registieren duerfen. Ein oeffentlicher Account von z.B. 'matrix.com' sollte genuegen.
+#
+matrix_synapse_enable_registration: false
+
+
+########################################################################################################################
+#
+# @see https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook-dimension.md
+#
+#matrix_dimension_enabled: true
+#matrix_dimension_admins:
+#  - "@christian:{{ matrix_domain }}"
+#  - "@marco:{{ matrix_domain }}"
+
+
+########################################################################################################################
+# A list of values for the Accept-Language HTTP header used when downloading webpages during URL preview generation
+#matrix_url_preview_accept_language: ['de-DE', 'de', 'en-US', 'en']
+
